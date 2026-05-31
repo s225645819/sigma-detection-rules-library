@@ -1,0 +1,24 @@
+title: Web Shell Upload via HTTP POST
+id: c4567890-d123-e456-f789-a01234567890
+status: experimental
+description: Detects suspicious file uploads (aspx, jsp, php) via HTTP POST requests, indicating potential web shell placement.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: web_application_firewall
+  product: generic
+detection:
+  selection:
+    http_method: 'POST'
+    filename|endswith:
+      - '.aspx'
+      - '.jsp'
+      - '.php'
+      - '.war'
+  condition: selection
+falsepositives:
+  - Legitimate file upload portals (requires tuning out specific application paths)
+level: medium
+tags:
+  - attack.persistence
+  - attack.t1505.003

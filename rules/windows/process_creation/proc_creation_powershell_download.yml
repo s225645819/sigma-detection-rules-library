@@ -1,0 +1,27 @@
+title: PowerShell Download and Execute Pattern
+id: b5678901-e234-f567-a890-b12345678901
+status: experimental
+description: Detects PowerShell being used to download and immediately execute remote code.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: 
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains:
+      - 'DownloadString'
+      - 'DownloadFile'
+    CommandLine|contains:
+      - 'IEX'
+      - 'Invoke-Expression'
+  condition: selection
+falsepositives:
+  - Legitimate remote administration scripts (requires baselining internal IT subnets)
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001

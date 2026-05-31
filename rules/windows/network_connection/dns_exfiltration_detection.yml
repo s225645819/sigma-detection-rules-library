@@ -1,0 +1,30 @@
+title: DNS Exfiltration / DNS Tunneling Detection
+id: b2222222-c333-d444-e555-f66666666666
+status: experimental
+description: Detects potential DNS-based data exfiltration and DNS tunneling (abnormally large DNS queries, suspicious subdomains)
+logsource:
+  category: dns_query
+  product: windows
+detection:
+  selection_large_dns:
+    query_length: '>100'  # unusually long DNS query
+    query|contains:
+      - 'exfil'
+      - 'c2'
+      - 'beacon'
+  selection_suspicious_subdomains:
+    Query|contains:
+      - 'aaa.aaa'
+      - 'bbb.bbb'
+      - 'random-domain-'
+      - '0x'
+  selection_high_frequency:
+    QueryCount: '>1000'  # excessive DNS queries to same domain
+  condition: selection_large_dns or selection_suspicious_subdomains or selection_high_frequency
+falsepositives:
+  - Legitimate DNS over HTTPS (DoH) traffic
+  - Large legitimate DNS queries
+level: medium
+mitre:
+  - attack.exfiltration
+  - attack.t1041

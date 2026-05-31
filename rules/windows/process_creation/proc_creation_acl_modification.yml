@@ -1,0 +1,37 @@
+title: Suspicious Access Control List (ACL) Modification
+id: e5555555-f666-a777-b888-c99999999999
+status: experimental
+description: Detects modification of file/folder/registry ACLs to grant excessive permissions
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_cacls:
+    Image|endswith: cacls.exe
+    CommandLine|contains:
+      - '/grant'
+      - '/replace'
+      - 'Everyone'
+      - 'SYSTEM'
+  selection_icacls:
+    Image|endswith: icacls.exe
+    CommandLine|contains:
+      - '/grant'
+      - '/replace'
+      - '(F)'  # Full permissions
+      - '(M)'  # Modify permissions
+      - 'Everyone'
+  selection_powershell:
+    Image|endswith: powershell.exe
+    CommandLine|contains:
+      - 'Set-Acl'
+      - 'FullControl'
+      - 'Everyone'
+  condition: selection_cacls or selection_icacls or selection_powershell
+falsepositives:
+  - Legitimate permission management
+  - Automated deployment scripts
+level: medium
+mitre:
+  - attack.defense_evasion
+  - attack.t1222

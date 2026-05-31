@@ -1,0 +1,38 @@
+title: Reverse Shell Execution Detection
+id: c3333333-d444-e555-f666-a77777777777
+status: experimental
+description: Detects execution of reverse shell commands via cmd.exe or PowerShell
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_netcat:
+    Image|endswith:
+      - cmd.exe
+      - powershell.exe
+    CommandLine|contains:
+      - 'nc '
+      - 'ncat'
+      - 'bash'
+      - '/dev/tcp'
+      - '/dev/udp'
+  selection_common_rev_shells:
+    CommandLine|contains:
+      - 'bash -i'
+      - 'sh -i'
+      - 'cmd.exe /c'
+      - 'exec 1><&1'
+  selection_socat:
+    Image|endswith:
+      - socat.exe
+      - nc64.exe
+  condition: selection_netcat or selection_common_rev_shells or selection_socat
+falsepositives:
+  - Legitimate system administration
+  - Network troubleshooting tools
+level: critical
+mitre:
+  - attack.execution
+  - attack.t1059.001
+  - attack.command_and_control
+  - attack.t1071

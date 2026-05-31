@@ -1,0 +1,36 @@
+title: Kerberoasting / Service Principal Name Enumeration
+id: d4444444-e555-f666-a777-b88888888888
+status: experimental
+description: Detects Kerberoasting attacks and SPN enumeration for credential theft
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_impacket:
+    Image|endswith:
+      - GetUserSPNs.py
+      - impacket.exe
+    CommandLine|contains:
+      - 'GetUserSPNs'
+      - 'kerberoast'
+  selection_powershell:
+    Image|endswith: powershell.exe
+    CommandLine|contains:
+      - 'Get-ADUser'
+      - 'ServicePrincipalName'
+      - 'Set-ADAccountPassword'
+  selection_rubeus:
+    Image|endswith:
+      - Rubeus.exe
+      - rubeus.exe
+    CommandLine|contains:
+      - 'kerberoast'
+      - 'asreproast'
+  condition: selection_impacket or selection_powershell or selection_rubeus
+falsepositives:
+  - Legitimate Kerberos administration
+  - Authorized penetration testing
+level: high
+mitre:
+  - attack.credential_access
+  - attack.t1558.003

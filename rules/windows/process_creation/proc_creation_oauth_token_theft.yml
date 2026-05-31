@@ -1,0 +1,30 @@
+title: OAuth Token Theft / Token Acquisition
+id: a1111111-b222-c333-d444-e55555555555
+status: experimental
+description: Detects suspicious OAuth token acquisition and token theft attempts against cloud services
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_powershell:
+    Image|endswith: powershell.exe
+    CommandLine|contains:
+      - 'refresh_token'
+      - 'access_token'
+      - 'client_secret'
+      - 'client_id'
+      - 'authorization_code'
+  selection_curl:
+    Image|endswith: curl.exe
+    CommandLine|contains:
+      - 'oauth'
+      - 'token'
+      - 'microsoft/graph'
+  condition: selection_powershell or selection_curl
+falsepositives:
+  - Legitimate OAuth applications
+  - Azure PowerShell scripts
+level: high
+mitre:
+  - attack.credential_access
+  - attack.t1528

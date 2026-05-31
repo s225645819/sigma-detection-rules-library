@@ -1,0 +1,25 @@
+title: Mimikatz LSASS Memory Dump
+id: e2345678-b901-c234-d567-e89012345678
+status: experimental
+description: Detects mimikatz attempting to dump LSASS process memory to extract credentials.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\mimikatz.exe'
+      - '\mimidrv.sys'
+    CommandLine|contains:
+      - 'lsass'
+      - 'sekurlsa::logonpasswords'
+      - 'sekurlsa::minidump'
+  condition: selection
+falsepositives:
+  - Unlikely, highly specific to Mimikatz usage
+level: critical
+tags:
+  - attack.credential_access
+  - attack.t1003.001

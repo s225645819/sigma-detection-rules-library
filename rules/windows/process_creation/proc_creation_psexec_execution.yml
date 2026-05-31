@@ -1,0 +1,24 @@
+title: PsExec Service Installation and Execution
+id: d3456789-c012-d345-e678-f90123456789
+status: experimental
+description: Detects PsExec usage for lateral movement across the network.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_psexec:
+    Image|endswith:
+      - '\psexec.exe'
+      - '\psexec64.exe'
+  selection_service:
+    Image|endswith: '\services.exe'
+    CommandLine|contains: 'PSEXESVC'
+  condition: selection_psexec or selection_service
+falsepositives:
+  - Legitimate system administration tools (requires baselining admin subnets)
+level: high
+tags:
+  - attack.lateral_movement
+  - attack.t1021.002

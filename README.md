@@ -91,7 +91,7 @@ pip install -r requirements.txt
 
 # Run unit tests
 python -m pytest tests/ -v
-
+```
 ---
 
 ## Rule Format

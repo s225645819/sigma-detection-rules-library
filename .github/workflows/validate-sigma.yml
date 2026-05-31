@@ -14,12 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
+   - name: Upload converted rules
+      uses: actions/upload-artifact@v4
       with:
-        python-version: '3.10'
+        name: converted-rules
+        path: output/
     
     - name: Install dependencies
       run: |

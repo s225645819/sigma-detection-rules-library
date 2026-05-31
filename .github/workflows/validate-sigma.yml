@@ -1,0 +1,59 @@
+name: Validate Sigma Rules
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'rules/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install pyyaml
+        pip install pycurl
+        pip install sigma-cli
+    
+    - name: Validate Sigma rule syntax
+      run: |
+        for rule in rules/**/*.yml; do
+          echo "Validating $rule..."
+          sigma check "$rule" || exit 1
+        done
+    
+    - name: Convert to Splunk SPL
+      run: |
+        mkdir -p output/splunk
+        for rule in rules/windows/**/*.yml; do
+          filename=$(basename "$rule" .yml)
+          sigma convert -t splunk "$rule" > "output/splunk/${filename}.spl" || echo "Conversion failed for $rule"
+        done
+    
+    - name: Convert to Sentinel KQL
+      run: |
+        mkdir -p output/sentinel
+        for rule in rules/windows/**/*.yml; do
+          filename=$(basename "$rule" .yml)
+          sigma convert -t azure_sentinel "$rule" > "output/sentinel/${filename}.kql" || echo "Conversion failed for $rule"
+        done
+    
+    - name: Run unit tests
+      run: |
+        python -m pytest tests/ -v
+    
+    - name: Upload converted rules
+      uses: actions/upload-artifact@v3
+      with:
+        name: converted-rules
+        path: output/

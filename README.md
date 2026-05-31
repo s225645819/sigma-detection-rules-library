@@ -120,6 +120,20 @@ mitre:
   - attack.execution
   - attack.t1059.001
 ```
+---
+
+## Skills Demonstrated
+
+- **Detection Engineering:** Writing production-grade Sigma detection rules targeting real-world TTPs
+- **Multi-SIEM Fluency:** One rule, three SIEMs (Splunk SPL, Sentinel KQL, Elastic ECS)
+- **CI/CD Automation:** GitHub Actions for validation, testing, and artifact generation
+- **Code Quality:** Unit testing, YAML validation, metadata enforcement
+- **MITRE ATT&CK Mapping:** All rules mapped to adversarial techniques
+- **Threat Modeling:** Cobalt Strike, Mimikatz, lateral movement, persistence, exfiltration detection
+- **DevOps Practices:** Version control, infrastructure-as-code mindset, automated testing
+- **Python/Testing:** PyTest, YAML parsing, subprocess automation
+
+---
 
 ## References
 

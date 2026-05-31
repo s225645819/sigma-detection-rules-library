@@ -1,0 +1,38 @@
+title: Cobalt Strike Beacon Process Execution Pattern
+id: f1234567-a890-b123-c456-d78901234567
+status: experimental
+description: Detects execution of Cobalt Strike beacon implants via suspicious rundll32 arguments or PowerShell staging commands.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_rundll32:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains|all:
+      - 'rundll32'
+      - '.dll'
+    CommandLine|contains:
+      - 'DllRegisterServer'
+      - 'DllGetClassObject'
+  
+  selection_powershell:
+    Image|endswith: 
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains|all:
+      - 'IEX'
+      - 'Net.WebClient'
+      - 'DownloadString'
+
+  condition: selection_rundll32 or selection_powershell
+falsepositives:
+  - Rare legitimate administrative scripts using WebClient.DownloadString
+  - Legitimate COM object registrations
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.command_and_control
+  - attack.t1071

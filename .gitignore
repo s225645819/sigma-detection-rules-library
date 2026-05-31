@@ -1,0 +1,16 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.class
+
+# Virtual environments
+venv/
+env/
+.env/
+
+# IDEs
+.vscode/
+.idea/
+
+# CI/CD Output
+output/

@@ -30,7 +30,7 @@ jobs:
     - name: Install Sigma Plugins
       run: |
         sigma plugin install splunk
-        sigma plugin install azure-sentinel
+        sigma plugin install kusto
         sigma plugin install elasticsearch
     
     - name: Validate Sigma rule syntax
@@ -51,7 +51,7 @@ jobs:
         mkdir -p output/sentinel
         find rules/ -type f -name "*.yml" | while read rule; do
           filename=$(basename "$rule" .yml)
-          sigma convert -t azure_sentinel "$rule" > "output/sentinel/${filename}.kql" || echo "Sentinel conversion skipped for $rule"
+          sigma convert -t kusto "$rule" > "output/sentinel/${filename}.kql" || echo "Sentinel conversion skipped for $rule"
         done
 
     - name: Convert to Elastic ECS

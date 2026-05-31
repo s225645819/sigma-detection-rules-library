@@ -3,7 +3,9 @@ name: Validate Sigma Rules
 on:
   push:
     branches: [ main ]
-    paths: [ 'rules/**' ]
+    paths: 
+      - 'rules/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [ main ]
 

@@ -1,16 +1,35 @@
-# Python caches
+# Python
 __pycache__/
 *.py[cod]
-*.class
-
-# Virtual environments
-venv/
+*$py.class
+*.so
+.Python
 env/
-.env/
+venv/
+*.egg-info/
+dist/
+build/
 
-# IDEs
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
-# CI/CD Output
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Generated files
 output/
+*.log
+
+# Secrets
+.env
+secrets.yml

@@ -1,0 +1,27 @@
+title: Suspicious Process Injection Target
+id: d8901234-b567-c890-d123-e45678901234
+status: experimental
+description: Detects signs of process injection where a legitimate system process (svchost) unexpectedly spawns a command shell.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\svchost.exe'
+      - '\dllhost.exe'
+      - '\explorer.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\rundll32.exe'
+    ParentCommandLine|contains: '-k' 
+  condition: selection
+falsepositives:
+  - Rare Windows service diagnostic launches
+level: medium
+tags:
+  - attack.defense_evasion
+  - attack.t1055

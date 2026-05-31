@@ -1,0 +1,26 @@
+title: Privilege Escalation via UAC Bypass
+id: f0123456-d789-a012-b345-c67890123456
+status: experimental
+description: Detects UAC bypass attempts using known vulnerable binaries like fodhelper or eventvwr.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - 'bypassuac'
+      - 'fodhelper.exe'
+      - 'eventvwr.exe'
+      - 'sdclt.exe'
+    Image|endswith: 
+      - '\powershell.exe'
+      - '\cmd.exe'
+  condition: selection
+falsepositives:
+  - None known, highly suspicious behavior
+level: high
+tags:
+  - attack.privilege_escalation
+  - attack.t1547

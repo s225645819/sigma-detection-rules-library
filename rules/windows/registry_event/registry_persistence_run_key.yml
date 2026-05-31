@@ -1,0 +1,25 @@
+title: Suspicious Registry Run Key Modification
+id: c7890123-a456-b789-c012-d34567890123
+status: experimental
+description: Detects suspicious executables being added to the HKCU or HKLM Run registry keys for persistence.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: registry_event
+  product: windows
+detection:
+  selection:
+    TargetObject|contains:
+      - 'HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run'
+      - 'HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\reg.exe'
+  condition: selection
+falsepositives:
+  - Legitimate software installers (usually run from temp directories)
+level: medium
+tags:
+  - attack.persistence
+  - attack.t1547.001

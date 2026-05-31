@@ -1,0 +1,24 @@
+title: Suspicious Scheduled Task Creation
+id: e9012345-c678-d901-e234-f56789012345
+status: experimental
+description: Detects the creation of scheduled tasks executing command shells, a common persistence mechanism.
+author: Pratiyush
+date: 2026-05-31
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith: '\schtasks.exe'
+    CommandLine|contains: '/create'
+    CommandLine|contains:
+      - 'powershell'
+      - 'cmd.exe'
+      - 'bypass'
+  condition: selection
+falsepositives:
+  - Legitimate scheduled admin tasks
+level: medium
+tags:
+  - attack.persistence
+  - attack.t1053.005

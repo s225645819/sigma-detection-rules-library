@@ -53,6 +53,34 @@ See `.github/workflows/validate-sigma.yml` for pipeline details.
 
 ---
 
+## How to Use
+
+### Converting Sigma to Your SIEM
+
+**Splunk SPL:**
+```bash
+sigma convert -t splunk rules/windows/process_creation/proc_creation_cobalt_strike_beacon.yml
+```
+
+**Sentinel KQL:**
+```bash
+sigma convert -t azure_sentinel rules/windows/process_creation/proc_creation_cobalt_strike_beacon.yml
+```
+
+**Elastic ECS:**
+```bash
+sigma convert -t elastic-ecs rules/windows/process_creation/proc_creation_cobalt_strike_beacon.yml
+```
+
+### Deploying to Your SIEM
+
+**Sentinel:** Copy converted KQL → Analytics Rules → Create new rule → Paste query
+
+**Splunk:** Copy converted SPL → Search & Reporting → Create saved search
+
+**Elastic:** Copy converted query → Kibana → Create detection rule
+
+---
 ## Local Development & Testing
 
 To run the testing suite locally:
@@ -63,3 +91,39 @@ pip install -r requirements.txt
 
 # Run unit tests
 python -m pytest tests/ -v
+
+---
+
+## Rule Format
+
+All rules follow Sigma standard YAML format:
+
+```yaml
+title: Rule Title
+id: [UUID]
+status: experimental|test|stable
+description: What this rule detects
+logsource:
+  category: process_creation|registry_event|network_connection
+  product: windows|linux|generic
+detection:
+  selection:
+    Image|endswith: powershell.exe
+    CommandLine|contains:
+      - '-enc'
+      - 'IEX'
+  condition: selection
+falsepositives:
+  - Legitimate tool X
+level: low|medium|high|critical
+mitre:
+  - attack.execution
+  - attack.t1059.001
+```
+
+## References
+
+- Sigma Rule Documentation: https://sigma.readthedocs.io/
+- SigmaHQ GitHub: https://github.com/SigmaHQ/sigma
+- Sigma Converter (sigmac): https://github.com/SigmaHQ/pySigma
+- MITRE ATT&CK: https://attack.mitre.org/
